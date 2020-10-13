@@ -45,25 +45,97 @@ var Calculadora = {
 
 		var vdisplay = document.getElementById("display").innerHTML;
 
-		var vnum = element.target.alt;
+		var strdply, valt = element.target.alt;
 
-		if (this.validaNumero(vnum)) {
-			if (vdisplay == '0') {
-				document.querySelector('#display').innerHTML = vnum;
-			} else {
-				document.querySelector('#display').innerHTML = document.querySelector('#display').innerHTML + vnum;
-			}
-		} else if (vnum == 'On') {
-			document.querySelector('#display').innerHTML = '0';
+		switch (valt) { 
+	   	case 'On': 
+      	strdply = '0';
+      	break 
+	   	case 'punto': 
+      	strdply = Calculadora.addPunto(vdisplay);
+      	break 
+	   	case 'signo': 
+      	strdply = Calculadora.addSigno(vdisplay);
+      	break 
+	   	default: 
+      	if (Calculadora.validaNumero(valt)) {
+					if (vdisplay == '0') {
+						strdply = valt;
+					} else {
+						strdply = vdisplay + valt;
+					}
+				} else {
+					strdply = vdisplay;
+				}
 		}
+
+		strdply = Calculadora.validaLargo(strdply);
+
+		document.querySelector('#display').innerHTML = strdply;
 
 	},
 
-	validaNumero: function(vnum){
+	validaNumero: function(str){
 		var out;
-		if (vnum == '1' || vnum == '2' || vnum == '3' || vnum == '4' || vnum == '5' || vnum == '6' || vnum == '7' || vnum == '8' || vnum == '9' || vnum == '0' ) {
+		if (str == '1' || str == '2' || str == '3' || str == '4' || str == '5' || str == '6' || str == '7' || str == '8' || str == '9' || str == '0' ) {
 			out = true;
 		}
+		return out;
+	},
+
+	addPunto: function(str){
+
+		var out, num = str.indexOf('.');
+
+		if (num < 0) {
+			out = str + '.';
+		} else {
+			out = str;
+		}
+
+		return out;
+	},
+
+	addSigno: function(str){
+		var out, num = str.indexOf('-');
+
+		if (str == 0) {
+			out = str;
+		} else if (num < 0) {
+			out = '-'+str;
+		} else {
+			out = str.replace('-','');
+		}
+
+		return out;
+	},
+
+	validaLargo: function(str){
+
+		var out, strtmp=str, vlgth=8;
+
+		if (strtmp.indexOf('.') >= 0) {
+			strtmp = strtmp.replace('.','');
+			vlgth ++;
+		}
+
+		if (strtmp.indexOf('-') >= 0) {
+			strtmp = strtmp.replace('-','');
+			vlgth ++;
+		}
+
+		if (strtmp.indexOf('.') >= 0 && strtmp.indexOf('-')>= 0) {
+			strtmp = strtmp.replace('.','');
+			strtmp = strtmp.replace('-','');
+			vlgth = vlgth+2;
+		}
+
+		if (strtmp.length <= 8) {
+			out = str;
+		} else {
+			out = str.substring(0,vlgth);
+		}
+
 		return out;
 	},
 
