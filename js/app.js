@@ -2,6 +2,8 @@ var Calculadora = {
 
 	init: function(){
 
+	var Storage = window.localStorage
+
 	this.asignarTriggerTecla();
 
 	},
@@ -48,15 +50,32 @@ var Calculadora = {
 		var strdply, valt = element.target.alt;
 
 		switch (valt) { 
-	   	case 'On': 
+	   	case 'On':
       	strdply = '0';
+      	sessionStorage.setItem('numOper', '');
       	break 
-	   	case 'punto': 
+	   	case 'punto':
       	strdply = Calculadora.addPunto(vdisplay);
       	break 
-	   	case 'signo': 
+	   	case 'signo':
       	strdply = Calculadora.addSigno(vdisplay);
       	break 
+      case 'mas':
+      	strdply = Calculadora.addOperNum([vdisplay,'+']);
+      	break 
+      case 'menos':
+      	strdply = Calculadora.addOperNum([vdisplay,'-']);
+      	break 
+      case 'por':
+      	strdply = Calculadora.addOperNum([vdisplay,'x']);
+      	break 
+      case 'dividido':
+      	strdply = Calculadora.addOperNum([vdisplay,'/']);
+      	break 
+      case 'igual':
+      	strdply = Calculadora.putResult(vdisplay);
+      	break 
+      
 	   	default: 
       	if (Calculadora.validaNumero(valt)) {
 					if (vdisplay == '0') {
@@ -139,21 +158,38 @@ var Calculadora = {
 		return out;
 	},
 
-	suma: function(a,b){
-		var out = a+b;
-		return out;
+	addOperNum: function (numOper) {
+		sessionStorage.setItem('numOper', JSON.stringify(numOper));
+		return '';
 	},
-	resta: function(a,b){
-		var out = a-b;
-		return out;
-	},
-	multiplica: function(a,b){
-		var out = a*b;
-		return out;
-	},
-	divide: function(a,b){
-		var out = a/b;
-		return out;
+
+	putResult: function(numB) {
+		
+		var numsst = JSON.parse(sessionStorage.getItem('numOper')), numA = numsst[0], out=0;
+
+		switch (numsst[1]) { 
+	   	case '+':
+      	out = numA + numB;
+      	break 
+	   	case '-':
+      	out = numA - numB;
+      	break 
+	   	case 'x':
+      	out = numA * numB;
+      	break 
+      case '/':
+      	out = numA / numB;
+      	break 
+      
+	   	default: 
+		}
+
+		sessionStorage.setItem('numOper', '');
+
+		// console.log(out);
+
+		return out.toString();
+
 	}
 
 };
