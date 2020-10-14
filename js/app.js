@@ -53,6 +53,7 @@ var Calculadora = {
 	   	case 'On':
       	strdply = '0';
       	sessionStorage.setItem('numOper', '');
+      	sessionStorage.setItem('numUltVal', '');
       	break 
 	   	case 'punto':
       	strdply = Calculadora.addPunto(vdisplay);
@@ -83,6 +84,7 @@ var Calculadora = {
 					} else {
 						strdply = vdisplay + valt;
 					}
+
 				} else {
 					strdply = vdisplay;
 				}
@@ -159,15 +161,33 @@ var Calculadora = {
 	},
 
 	addOperNum: function (numOper) {
-		sessionStorage.setItem('numOper', JSON.stringify(numOper));
+		sessionStorage.setItem('numVal', numOper[0]);
+		sessionStorage.setItem('numOper', numOper[1]);
 		return '';
 	},
 
 	putResult: function(numB) {
 		
-		var numsst = JSON.parse(sessionStorage.getItem('numOper')), numA = numsst[0], out=0;
+		var out=0, numA=0, numUVal=sessionStorage.getItem('numUltVal'), numOper = sessionStorage.getItem('numOper');
 
-		switch (numsst[1]) { 
+		// console.log('numUVal: '+numUVal);
+
+		if ('' === numUVal) {
+			numA = sessionStorage.getItem('numVal');
+			sessionStorage.setItem('numUltVal', numB);
+		} else {
+			numA = numB;
+			numB = numUVal;
+		}
+
+		numA = parseFloat(numA);
+		numB = parseFloat(numB);
+
+
+		// console.log(numA);
+		// console.log(numB);
+
+		switch (numOper) { 
 	   	case '+':
       	out = numA + numB;
       	break 
@@ -183,10 +203,6 @@ var Calculadora = {
       
 	   	default: 
 		}
-
-		sessionStorage.setItem('numOper', '');
-
-		// console.log(out);
 
 		return out.toString();
 
